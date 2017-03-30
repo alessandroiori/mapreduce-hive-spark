@@ -1,0 +1,10 @@
+/home/ambpl/eclipse/workspace/Example1/src/bigram/BigramCountMapper.java
+/home/ambpl/eclipse/workspace/Example1/src/bigram/BigramWritable.java
+/home/ambpl/eclipse/workspace/Example1/src/temperature/MaxTemperatureMapper.java
+/home/ambpl/eclipse/workspace/Example1/src/wordcount/WordCount.java
+/home/ambpl/eclipse/workspace/Example1/src/temperature/MaxTemperatureReducer.java
+/home/ambpl/eclipse/workspace/Example1/src/temperature/MaxTemperature.java
+/home/ambpl/eclipse/workspace/Example1/src/wordcount/WordCountReducer.java
+/home/ambpl/eclipse/workspace/Example1/src/bigram/BigramCount.java
+/home/ambpl/eclipse/workspace/Example1/src/wordcount/WordCountMapper.java
+/home/ambpl/eclipse/workspace/Example1/src/bigram/BigramCountReducer.java

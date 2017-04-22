@@ -20,16 +20,20 @@ header = data.first()
 
 # Data without header row
 dataWoHeader = data.filter(lambda x: x<>header)
+dataWoHeader = dataWoHeader.map(lambda x:x.encode('utf-8'))
+#TODO: replace "" with "-" 
+
 
 #dataWoHeader.map(lambda x:x.split(',')).take(10)
 
-fields = header.replace(" ", "_").replace("/", "_").split(",")
+fields = header.replace("(","_").replace(")","_")\
+		.replace(" ","_").replace("/","_").split(",")
 
 # Crime class
-Crime = namedtuple("Crime", fields, verbose=true)
+Crime = namedtuple("Crime", fields, verbose=True)
 
 # Parse function return istance of Crime class from csv row
-def parse row:
+def parse(row):
 	reader = csv.reader(StringIO(row))
 	row = reader.next()
 	return Crime(*row)
@@ -54,11 +58,25 @@ def extractCoords(location):
 	return (location_lat, location_lng)
 
 # minimum latitude and longitude from dataset
-crimeFiltered.map(lambda x:ectractCoords(x.Location_1))\
-		.reduce(lambda x,y: min(x[0],y[0]), min(x[1],y[1]))
+#crimeFiltered.map(lambda x:extractCoords(x.Location_1))\
+#		.reduce(lambda x,y: min(x[0],y[0]), min(x[1],y[1]))
 
 # maximum latitude and longitude from dataset
-crimeFiltered.map(lambda x:ectractCoords(x.Location_1))\
-                .reduce(lambda x,y: max(x[0],y[0]), max(x[1],y[1]))
+#crimeFiltered.map(lambda x:extractCoords(x.Location_1))\
+#                .reduce(lambda x,y: max(x[0],y[0]), max(x[1],y[1]))
+
+
+# New York
+# - bounding box: -74,2589, 40,4774, -73,7004, 40,9176
+# - source: https://www.flickr.com/places/info/2459115
+min_lat = -74,2589
+min_lng = 40,4774
+max_lat = -73,7004
+max_lng = 40,9176
+
+crimeFinal = crimeFiltered.filter(lambda x:extractLocation(x.Location_1)[0] >= min_lng and \
+					 x.extractLocation(x.Location_1)[0] <= max_lng and \
+					 x.extractLocation(x.Location_1)[1] >= min_lat and \
+					 x.extractLocation(x.Location_1)[1] <= max_lat)
 
 

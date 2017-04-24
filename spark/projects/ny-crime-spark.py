@@ -8,7 +8,8 @@ from pyspark import SparkContext
 #url = 'https://data.cityofnewyork.us/api/views/k384-xu3q/rows.csv?accessType=DOWNLOAD'
 #file = wget.download(url)
 
-file='path/to/file'
+# path/to/file
+file="Desktop/dataset/ny-crime-rows.csv"
 
 sc = SparkContext("local", "NY Crime App")
 data = sc.textFile(file).cache()
@@ -20,14 +21,18 @@ header = data.first()
 
 # Data without header row
 dataWoHeader = data.filter(lambda x: x<>header)
-dataWoHeader = dataWoHeader.map(lambda x:x.encode('utf-8'))
-#TODO: replace "" with "-" 
+dataWoHeader = dataWoHeader.map(lambda x:x.encode("utf-8"))
 
+# replace empty fields
+#dataWoHeader = dataWoHeader.map(lambda x: re.sub(r"(?<=,)(?=,)", "-", x))
 
 #dataWoHeader.map(lambda x:x.split(',')).take(10)
 
-fields = header.replace("(","_").replace(")","_")\
-		.replace(" ","_").replace("/","_").split(",")
+fields = header.replace("(","_").replace(")","_").replace(" ","_").replace("/","_").split(",")
+
+# remove row with incorrect len
+dataWoHeaderCorrect = dataWoHeader.filter(lambda x:len(x.split(","))==len(fields)+1)
+dataWoHeaderIncorrect = dataWoHeader.filter(lambda x:len(x.split(","))!=len(fields)+1)
 
 # Crime class
 Crime = namedtuple("Crime", fields, verbose=True)
@@ -39,11 +44,11 @@ def parse(row):
 	return Crime(*row)
 
 # structured RDD object
-crimes = dataWoHeader.map(parse)
+crimes = dataWoHeaderCorrect.map(parse)
 
-#crime.first().Offense
-#crime.map(lambda x:x.Offense).countByValue()
-#crime.map(lambda x:x.Occurrunce_Years).countByValue()
+#crimes.first().City
+#crimes.map(lambda x:x.City).countByValue()
+#crimes.map(lambda x:x.Created_Date).countByValue()
 
 #more realistic data 
 crimeFiltered = crime.filter(lambda x: not (x.Offense=="NA" or x.Occurence_Years==''))\
